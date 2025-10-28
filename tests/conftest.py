@@ -1,4 +1,5 @@
 # tests/conftest.py
+from contextlib import contextmanager
 import pytest
 from sqlmodel import SQLModel, Session, create_engine
 
@@ -25,8 +26,17 @@ def in_memory_db(monkeypatch):
     engine = create_engine("sqlite:///:memory:", echo=False)
     SQLModel.metadata.create_all(engine)
 
+    @contextmanager
     def _override_get_session():
-        return Session(engine)
+        session = Session(engine)
+        try:
+            yield session
+            session.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
     # monkeypatch.setattr(
     #     "soltradepy.storage.graduated_tokens_store.get_session", _override_get_session

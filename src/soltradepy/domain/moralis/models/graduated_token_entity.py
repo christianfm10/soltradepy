@@ -28,8 +28,3 @@ class GraduatedToken(SQLModel, table=True):
     stored_at: datetime.datetime = Field(
         default_factory=lambda: datetime.datetime.now(datetime.timezone.utc)
     )  # tracking interno
-
-
-# Generame un commit para todos los cambios
-# git add .
-# git commit -m "feat: add GraduatedToken model for storing graduated tokens from Moralis"
