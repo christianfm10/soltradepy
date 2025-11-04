@@ -6,12 +6,9 @@ from pathlib import Path
 
 from sqlmodel import select
 
-from soltradepy.infrastructure.database import get_session
 from soltradepy.domain.moralis.models.graduated_token_entity import GraduatedToken
+from soltradepy.infrastructure.repository.base_repository import BaseRepository
 
-# from typing import TYPE_CHECKING
-
-# if TYPE_CHECKING:
 
 DATA_PATH = Path(__file__).parent / "tokens_graduated.json"
 
@@ -40,32 +37,40 @@ class GraduatedTokensJSONStore:
             DATA_PATH.unlink()
 
 
-class GraduatedTokensSQLStore:
+logger = logging.getLogger(__name__)
 
-    @staticmethod
-    def save_sql(new_tokens: list[GraduatedToken]) -> None:
+
+class GraduatedTokenRepository(BaseRepository[GraduatedToken]):
+    def save(self, new_tokens: list[GraduatedToken]) -> GraduatedToken:
         """
-        Store para persistir tokens graduados en SQLite.
-        Hace UPSERT (merge) — si el token_address ya existe, lo actualiza.
+        Store para persistir graduated tokens.
+        Args:
+            new_tokens: lista de graduated tokens a guardar
         """
-        logger = logging.getLogger("GraduatedTokensSQLStore")
-        with get_session() as session:
-            try:
-                for token in new_tokens:
-                    # Check if token already exists using token_address as primary key
-                    stmt = select(GraduatedToken).where(
-                        GraduatedToken.token_address == token.token_address
+        try:
+            for token in new_tokens:
+                stmt = select(GraduatedToken).where(
+                    GraduatedToken.token_address == token.token_address
+                )
+                existing = self.session.scalar(stmt)
+
+                if existing:
+                    logger.info(f"Updating coin info for mint {token.token_address}")
+                    for key, value in token.model_dump().items():
+                        if key != "id":
+                            setattr(existing, key, value)
+                    result = existing
+                else:
+                    logger.info(
+                        f"Inserting new coin info for mint {token.token_address}"
                     )
-                    existing = session.scalar(stmt)
+                    self.session.add(token)
+                    result = token
 
-                    if existing:
-                        logger.warning(
-                            f"Token {token.token_address} already exists. Skipping insert."
-                        )
-                    else:
-                        logger.info(f"inserting new token {token.token_address}.")
-                        session.add(token)  # upsert automático
-            except Exception as e:
-                session.rollback()
-                logger.exception(f"Error saving token {token.token_address}: {e}")
-                raise
+                self.session.commit()
+            return result
+
+        except Exception as e:
+            self.session.rollback()
+            logger.exception(f"Error saving coin info for mint {token.mint}: {e}")
+            raise

@@ -1,11 +1,11 @@
-# Test for save_sql method in GraduatedTokensSQLStore
-from unittest.mock import AsyncMock
+# Test for save_sql method in GraduatedTokenRepository
 import pytest
 from sqlmodel import text
-from soltradepy.services.moralis.moralis_service import GraduatedTokensSyncSQLService
-import soltradepy.storage.graduated_tokens_store as store_module
 from soltradepy.storage.cursor_state_store import CursorStateStore
-from soltradepy.storage.graduated_tokens_store import GraduatedTokensSQLStore
+from soltradepy.storage.graduated_tokens_store import (
+    GraduatedTokenRepository,
+)
+from soltradepy.domain.moralis.models.graduated_token_entity import GraduatedToken
 
 
 @pytest.fixture
@@ -51,19 +51,17 @@ def fake_graduated_token():
 
 
 @pytest.mark.asyncio
-async def test_save_sql(fake_graduated_token, in_memory_db):
+async def test_save_list(fake_graduated_token, session):
     """Test the save_sql method of GraduatedTokensSQLStore."""
-    from soltradepy.domain.moralis.models.graduated_token_entity import GraduatedToken
-
     token = GraduatedToken.model_validate(fake_graduated_token)
     token2 = GraduatedToken.model_validate(fake_graduated_token)
     token3 = GraduatedToken.model_validate(fake_graduated_token)
-    GraduatedTokensSQLStore.save_sql([token, token2])
-    GraduatedTokensSQLStore.save_sql([token3])
 
-    with store_module.get_session() as session:
-        result = session.exec(
-            text("SELECT token_address, name FROM graduated_tokens")
-        ).all()
+    repository = GraduatedTokenRepository(session)
+    repository.save([token, token2])
+    repository.save([token3])
+
+    result = session.exec(
+        text("SELECT token_address, name FROM graduated_tokens")
+    ).all()
     assert len(result) == 1
-    # assert result[0][0] == "B3JsUuwErGRCUUQcyH3uHUveCqQcS1ayGTaMHG6mpump"

@@ -14,6 +14,7 @@ dependencies = [
     "pydantic-settings>=2.11.0",
     "pytest>=8.4.2",
     "pytest-asyncio>=1.2.0",
+    "ruff>=0.14.3",
     "sqlmodel>=0.0.27",
 ]
 
@@ -21,7 +22,22 @@ dependencies = [
 soltradepy = "soltradepy:main"
 moralis-tokens = "soltradepy.application.moralis_job:cli"
 createdb = "soltradepy.application.create_db:cli"
+graduated_tokens_coin_info = "soltradepy.application.coin_info_job:cli"
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]
 build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py314"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = ["E501"]  # Ignora líneas largas (opcional)

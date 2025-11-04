@@ -1,10 +1,11 @@
+from sqlmodel import Session
 from soltradepy.domain.moralis.models.graduated_token_entity import GraduatedToken
 from soltradepy.infrastructure.data_providers.moralis.moralis_client import (
     MoralisClient,
 )
 from soltradepy.storage.graduated_tokens_store import (
+    GraduatedTokenRepository,
     GraduatedTokensJSONStore,
-    GraduatedTokensSQLStore,
 )
 from soltradepy.storage.cursor_state_store import CursorStateStore
 
@@ -36,8 +37,10 @@ class GraduatedTokensSyncJSONService:
 class GraduatedTokensSyncSQLService:
     """Service to sync graduated tokens from Moralis and store them in SQL."""
 
-    def __init__(self, client: MoralisClient):
+    def __init__(self, client: MoralisClient, session=Session):
         self.client = client
+        self.session = session
+        self.repository = GraduatedTokenRepository(session)
 
     async def sync_next_page(self, limit: int = 10):
         """Sync the next page of graduated tokens from Moralis."""
@@ -47,7 +50,7 @@ class GraduatedTokensSyncSQLService:
         )
         tokens = [GraduatedToken.model_validate(token) for token in response.result]
         # tokens = [GraduatedToken(**token.model_dump()) for token in response.result]
-        GraduatedTokensSQLStore.save_sql(tokens)
+        self.repository.save(tokens)
         CursorStateStore.save(response.cursor)
 
         return {

@@ -1,42 +1,9 @@
 # soltradepy/infrastructure/data_providers/moralis/models/graduated_tokens_response.py
 
-from pydantic import BaseModel, Field
+from soltradepy.infrastructure.data_providers.base_model import APIBaseModel
+from pydantic import Field
 from datetime import datetime
 from typing import Optional, List
-
-
-class GraduatedToken(BaseModel):
-    """
-    Representa un token individual en la respuesta de Moralis.
-    """
-
-    # TODO: definir campos exactos según la response oficial
-
-
-class GraduatedTokensResponse(BaseModel):
-    """
-    Representa la respuesta completa del endpoint
-    'get_graduated_tokens_by_exchange' de Moralis.
-    """
-
-    # TODO: definir campos exactos según la response oficial
-    # ejemplo probable: items: list[GraduatedToken]
-    pass
-
-
-# def pydantic_repr(cls):
-# def __str__(self):
-#     return json.dumps(self.model_dump(), indent=2, ensure_ascii=False)
-
-# cls.__str__ = __str__
-# cls.__repr__ = __str__
-# return cls
-
-
-class APIBaseModel(BaseModel):
-    def __str__(self):
-        return self.model_dump_json(indent=2, ensure_ascii=False)
-        # return json.dumps(self.model_dump(), indent=2, ensure_ascii=False)
 
 
 class MoralisGraduatedToken(APIBaseModel):

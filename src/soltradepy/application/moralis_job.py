@@ -1,13 +1,15 @@
 import logging
 
+from soltradepy.infrastructure.config.env import get_settings
 from soltradepy.services.moralis.moralis_service import MoralisService
-from soltradepy.infrastructure.config.env import settings
 
 # logging with colors, orange for warnings, red for errors, green for info, blue for debug
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
+
+settings = get_settings()
 
 
 async def main():

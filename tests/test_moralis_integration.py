@@ -1,5 +1,7 @@
 import os
+
 import pytest
+
 from soltradepy.services.moralis.moralis_service import MoralisService
 
 
@@ -15,13 +17,13 @@ from soltradepy.services.moralis.moralis_service import MoralisService
     reason="MORALIS_API_KEY environment variable not set",
 )
 @pytest.mark.asyncio
-async def test_real_moralis_sync():
+async def test_real_moralis_sync(session):
     api_key = os.getenv("MORALIS_API_KEY")
     if not api_key:
         print("No MORALIS_API_KEY set, skipping real Moralis test.")
         pytest.skip("No MORALIS_API_KEY set, skipping real Moralis test.")
 
-    service = MoralisService(api_key=api_key)
+    service = MoralisService(api_key=api_key, session=session)
 
     result = await service.sync_graduated_tokens(limit=2)
     print(result)

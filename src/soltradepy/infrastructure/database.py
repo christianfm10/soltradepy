@@ -1,18 +1,26 @@
 # soltradepy/infrastructure/database.py
 
+
+# from typing import Generator, Iterator
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Generator
-from sqlmodel import SQLModel, create_engine, Session
-from soltradepy.infrastructure.config.env import settings
 
-# DATABASE_URL = "sqlite:///./soltradepy.db"  # luego puedes cambiar a postgresql://...
-# DATABASE_URL = "sqlite:///:memory:"  # luego puedes cambiar a postgresql://...
+from sqlmodel import Session, SQLModel, create_engine
 
+from soltradepy.infrastructure.config.env import get_settings
 
+settings = get_settings()
 engine = create_engine(
     settings.database_url,
     echo=settings.debug_sql,  # pon True si deseas ver SQL en consola para debug
 )
+""" def create_engine_from_settings():
+    settings = get_settings()
+    return create_engine(
+        settings.database_url,
+        echo=settings.debug_sql,
+    )
+ """
 
 
 def init_db() -> None:
@@ -20,18 +28,15 @@ def init_db() -> None:
     SQLModel.metadata.create_all(engine)
 
 
-@contextmanager
-def get_session() -> Generator:
+# @contextmanager
+def get_session():
     """
     Devuelve una sesión nueva.
     El usuario (tú) es responsable de cerrarla al finalizar.
     """
-    session = Session(engine)
-    try:
-        yield session
-        session.commit()
-    except:
-        session.rollback()
-        raise
-    finally:
-        session.close()
+    # engine = create_engine_from_settings()
+
+    # with Session(engine) as session:
+    #     yield session
+    # session = Session(engine)
+    return Session(engine)

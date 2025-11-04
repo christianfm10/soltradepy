@@ -32,7 +32,7 @@ def mock_moralis_response():
 async def test_get_graduated_tokens_by_exchange_pumpfun(
     mock_moralis_response, moralis_client
 ):
-    moralis_client._moralis_request = AsyncMock(return_value=mock_moralis_response)
+    moralis_client._fetch = AsyncMock(return_value=mock_moralis_response)
     client_response = await moralis_client.get_graduated_tokens_by_exchange_pumpfun(
         limit=5
     )
