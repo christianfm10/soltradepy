@@ -6,7 +6,6 @@ from soltradepy.domain.moralis.models.graduated_token_entity import GraduatedTok
 from soltradepy.infrastructure.data_providers.moralis.models.graduated_tokens_response import (
     MoralisGraduatedToken,
 )
-from soltradepy.storage.cursor_state_store import CursorStateStore
 from soltradepy.storage.graduated_tokens_store import (
     GraduatedTokenRepository,
 )

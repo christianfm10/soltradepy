@@ -61,6 +61,22 @@ def mock_coin_info_response():
     }
 
 
+@pytest.fixture
+def mock_user_created_coins_response():
+    """Mock response data for get_user_created_coins."""
+    return {
+        "coins": [
+            {
+                "name": "soza business suka ",
+                "symbol": "suka",
+                "mint": "B3JsUuwErGRCUUQcyH3uHUveCqQcS1ayGTaMHG6mpump",
+                "bonding_curve": "EdKEJeCiULLvs3mEwPCbcsccJGHnMNLCjcEuNKc9SLRo",
+            }
+        ],
+        "count": 1,
+    }
+
+
 @pytest.mark.asyncio
 async def test_sync_coin_info(pumpfun_client, mock_coin_info_response, session):
     """Test the sync_next_page method of GraduatedTokensSyncSQLService."""
@@ -70,7 +86,7 @@ async def test_sync_coin_info(pumpfun_client, mock_coin_info_response, session):
     result = await service.sync_coin_info(
         token_address="B3JsUuwErGRCUUQcyH3uHUveCqQcS1ayGTaMHG6mpump"
     )
-    print(result)
+
     assert result is not None
     assert result.mint == mock_coin_info_response["mint"]
 
@@ -80,6 +96,21 @@ async def test_sync_coin_info(pumpfun_client, mock_coin_info_response, session):
     assert len(result) == 1
 
     assert result[0][0] == "B3JsUuwErGRCUUQcyH3uHUveCqQcS1ayGTaMHG6mpump"
+
+
+@pytest.mark.asyncio
+async def test_sync_user_created_coins(
+    pumpfun_client, mock_user_created_coins_response, session
+):
+    """Test the sync_user_created_coins method of PumpfunService."""
+    pumpfun_client._fetch = AsyncMock(return_value=mock_user_created_coins_response)
+
+    service = PumpfunService(session, pumpfun_client)
+    pk = "4TR4otqwNY4QomVCJp3gD3HrwSb2H6hUaGiYwHKrpyz5"
+    result = await service.sync_user_created_coins_for_user_wallet(wallet_address=pk)
+
+    assert result is not None
+    assert result.public_key == pk
 
 
 @pytest.mark.skip(reason="I just wanna idempotent")

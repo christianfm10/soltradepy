@@ -8,7 +8,6 @@ authors = [
 ]
 requires-python = ">=3.14"
 dependencies = [
-    "black>=25.9.0",
     "httpx>=0.28.1",
     "pydantic>=2.12.3",
     "pydantic-settings>=2.11.0",
@@ -23,6 +22,7 @@ soltradepy = "soltradepy:main"
 moralis-tokens = "soltradepy.application.moralis_job:cli"
 createdb = "soltradepy.application.create_db:cli"
 graduated_tokens_coin_info = "soltradepy.application.coin_info_job:cli"
+update_coins_counter = "soltradepy.application.coins_count_job:cli"
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]
