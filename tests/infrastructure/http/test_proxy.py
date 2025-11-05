@@ -1,5 +1,3 @@
-import pytest
-
 from soltradepy.infrastructure.http.proxy import random_proxies
 
 

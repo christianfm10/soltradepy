@@ -114,15 +114,20 @@ def validate_proxy(proxy: str, timeout: float) -> str | None:
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0",
     }
+    headers = {
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Encoding": "gzip, deflate",
+        "Origin": "https://solscan.io",
+        "Referer": "https://solscan.io",
+        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0",
+    }
     proxy_obj = httpx.Proxy(f"http://{proxy}")
 
     try:
-        with httpx.stream(
-            "GET", url, headers=headers, proxy=proxy_obj, timeout=timeout
-        ) as response:
-            # Si el código de estado es 200, el proxy respondió correctamente
-            if response.status_code == 200 or response.status_code == 403:
-                return proxy
+        response = httpx.get(url, headers=headers, proxy=proxy_obj, timeout=timeout)
+        # Si el código de estado es 200, el proxy respondió correctamente
+        if response.status_code == 200 or response.status_code == 403:
+            return proxy
     except Exception:
         # Si ocurre cualquier error, el proxy no es válido
         return None
