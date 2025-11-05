@@ -2,8 +2,6 @@ import logging
 
 from sqlalchemy import text
 
-# from soltradepy.infrastructure.config.env import get_settings
-from soltradepy.domain.relationships.models import GraduatedTokensCoinInfo
 from soltradepy.infrastructure.database import get_session
 from soltradepy.services.pumpfun.pumpfun_service import PumpfunService
 
@@ -13,8 +11,6 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 logging.getLogger("httpx").setLevel(logging.DEBUG)
-
-# settings = get_settings()
 
 
 async def main():

@@ -1,5 +1,4 @@
 import datetime
-from typing import Optional
 
 from sqlmodel import Field, SQLModel
 
@@ -10,12 +9,12 @@ class GraduatedToken(SQLModel, table=True):
     Ideal para backtesting / histórico.
     """
 
-    __tablename__ = "graduated_tokens"
+    __tablename__ = "graduated_tokens"  # type: ignore
 
     token_address: str = Field(primary_key=True)  # único garantizado
-    name: Optional[str] = None
-    symbol: Optional[str] = None
-    logo: Optional[str] = None
+    name: str | None = None
+    symbol: str | None = None
+    logo: str | None = None
 
     decimals: int
     price_native: float
@@ -27,5 +26,5 @@ class GraduatedToken(SQLModel, table=True):
         datetime.datetime
     )  # convertir string ISO → datetime en el sync service
     stored_at: datetime.datetime = Field(
-        default_factory=lambda: datetime.datetime.now(datetime.timezone.utc)
+        default_factory=lambda: datetime.datetime.now(datetime.UTC)
     )  # tracking interno

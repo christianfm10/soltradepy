@@ -2,7 +2,6 @@
 import json
 from pathlib import Path
 
-
 CURSOR_PATH = Path(__file__).parent / "cursor_state.json"
 
 

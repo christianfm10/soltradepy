@@ -70,7 +70,9 @@ async def test_sync_coin_info(pumpfun_client, mock_coin_info_response, session):
     result = await service.sync_coin_info(
         token_address="B3JsUuwErGRCUUQcyH3uHUveCqQcS1ayGTaMHG6mpump"
     )
-    assert result is True
+    print(result)
+    assert result is not None
+    assert result.mint == mock_coin_info_response["mint"]
 
     result = session.exec(
         text("SELECT mint FROM coin_info"),

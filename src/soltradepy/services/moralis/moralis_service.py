@@ -11,7 +11,7 @@ from soltradepy.services.moralis.graduated_tokens_service import (
 class MoralisService:
     """Facade service for Moralis-related operations."""
 
-    def __init__(self, api_key: str, session=Session):
+    def __init__(self, api_key: str, session: Session):
         self.client = MoralisClient(api_key)
         self.graduated_tokens_sql_service = GraduatedTokensSyncSQLService(
             self.client, session

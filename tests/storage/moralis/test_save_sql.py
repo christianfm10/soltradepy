@@ -1,11 +1,15 @@
 # Test for save_sql method in GraduatedTokenRepository
 import pytest
 from sqlmodel import text
+
+from soltradepy.domain.moralis.models.graduated_token_entity import GraduatedToken
+from soltradepy.infrastructure.data_providers.moralis.models.graduated_tokens_response import (
+    MoralisGraduatedToken,
+)
 from soltradepy.storage.cursor_state_store import CursorStateStore
 from soltradepy.storage.graduated_tokens_store import (
     GraduatedTokenRepository,
 )
-from soltradepy.domain.moralis.models.graduated_token_entity import GraduatedToken
 
 
 @pytest.fixture
@@ -34,19 +38,19 @@ def mock_moralis_response():
 
 @pytest.fixture
 def fake_graduated_token():
-    from soltradepy.domain.moralis.models.graduated_token_entity import GraduatedToken
-
-    return GraduatedToken(
-        token_address="B3JsUuwErGRCUUQcyH3uHUveCqQcS1ayGTaMHG6mpump",
-        name="",
-        symbol="",
-        logo=None,
-        decimals=6,
-        price_native=0.000000398,
-        price_usd=0.000077656,
-        liquidity=32636.608554306,
-        fully_diluted_valuation=77656,
-        graduated_at="2025-10-25T08:43:54.000Z",
+    return MoralisGraduatedToken(
+        **{
+            "token_address": "B3JsUuwErGRCUUQcyH3uHUveCqQcS1ayGTaMHG6mpump",
+            "name": "",
+            "symbol": "",
+            "logo": None,
+            "decimals": "6",
+            "price_native": "0.000000398",
+            "price_usd": "0.000077656",
+            "liquidity": "32636.608554306",
+            "fully_diluted_valuation": "77656",
+            "graduated_at": "2025-10-25T08:43:54.000Z",
+        }
     )
 
 

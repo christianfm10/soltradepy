@@ -2,9 +2,6 @@
 
 
 # from typing import Generator, Iterator
-from collections.abc import Iterator
-from contextlib import contextmanager
-
 from sqlmodel import Session, SQLModel, create_engine
 
 from soltradepy.infrastructure.config.env import get_settings

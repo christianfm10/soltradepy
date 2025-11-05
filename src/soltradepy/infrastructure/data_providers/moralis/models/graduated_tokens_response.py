@@ -1,16 +1,17 @@
 # soltradepy/infrastructure/data_providers/moralis/models/graduated_tokens_response.py
 
-from soltradepy.infrastructure.data_providers.base_model import APIBaseModel
-from pydantic import Field
 from datetime import datetime
-from typing import Optional, List
+
+from pydantic import Field
+
+from soltradepy.infrastructure.data_providers.base_model import APIBaseModel
 
 
 class MoralisGraduatedToken(APIBaseModel):
     token_address: str = Field(..., alias="tokenAddress")
     name: str
     symbol: str
-    logo: Optional[str]
+    logo: str | None
     decimals: int
     price_native: float = Field(..., alias="priceNative")
     price_usd: float = Field(..., alias="priceUsd")
@@ -25,7 +26,7 @@ class MoralisGraduatedToken(APIBaseModel):
 
 
 class MoralisGraduatedTokensResponse(APIBaseModel):
-    result: List[MoralisGraduatedToken]
+    result: list[MoralisGraduatedToken]
     page_size: int = Field(..., alias="pageSize")
     page: int
-    cursor: Optional[str]
+    cursor: str | None

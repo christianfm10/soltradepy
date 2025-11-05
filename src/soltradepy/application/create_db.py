@@ -1,10 +1,7 @@
 # Init DB
-from soltradepy.infrastructure.database import init_db
-
-import soltradepy.infrastructure.database as db
-
 # WARNING: Dont Remove
 import soltradepy.domain
+import soltradepy.infrastructure.database as db
 
 
 def create_database():

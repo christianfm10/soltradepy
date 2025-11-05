@@ -17,10 +17,10 @@ class PumpfunService:
         self.coin_info_repo = CoinInfoRepository(session)
         # self.graduated_tokens_sql_service = GraduatedTokensSyncSQLService(self.client)
 
-    async def sync_coin_info(self, token_address: str):
+    async def sync_coin_info(self, token_address: str) -> CoinInfo | None:
         """Synchronize coin information with the SQL database."""
         response = await self.client.get_coin_info(token_address=token_address)
         token = CoinInfo.model_validate(response)
-        success = self.coin_info_repo.save(token)
+        coin = self.coin_info_repo.save(token)
 
-        return success
+        return coin

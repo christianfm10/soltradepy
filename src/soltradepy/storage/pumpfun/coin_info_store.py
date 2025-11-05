@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class CoinInfoRepository(BaseRepository[CoinInfo]):
-    def save(self, token: CoinInfo) -> bool:
+    def save(self, token: CoinInfo) -> CoinInfo | None:
         """
         Store para persistir información de monedas.
         Args:
@@ -29,8 +29,7 @@ class CoinInfoRepository(BaseRepository[CoinInfo]):
                 self.session.add(token)
 
             self.session.commit()
-
-            return True
+            return token
 
         except Exception as e:
             self.session.rollback()

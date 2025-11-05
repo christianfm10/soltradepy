@@ -73,6 +73,6 @@ async def test_save(fake_coin_info, session):
 
     repository = CoinInfoRepository(session=session)
 
-    success = repository.save(fake_coin_info)
-
-    assert success is True
+    coin = repository.save(fake_coin_info)
+    assert coin is not None
+    assert coin.mint == fake_coin_info.mint

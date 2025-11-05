@@ -41,12 +41,13 @@ logger = logging.getLogger(__name__)
 
 
 class GraduatedTokenRepository(BaseRepository[GraduatedToken]):
-    def save(self, new_tokens: list[GraduatedToken]) -> GraduatedToken:
+    def save(self, new_tokens: list[GraduatedToken]) -> bool:
         """
         Store para persistir graduated tokens.
         Args:
             new_tokens: lista de graduated tokens a guardar
         """
+        token = None
         try:
             for token in new_tokens:
                 stmt = select(GraduatedToken).where(
@@ -59,18 +60,19 @@ class GraduatedTokenRepository(BaseRepository[GraduatedToken]):
                     for key, value in token.model_dump().items():
                         if key != "id":
                             setattr(existing, key, value)
-                    result = existing
                 else:
                     logger.info(
                         f"Inserting new coin info for mint {token.token_address}"
                     )
                     self.session.add(token)
-                    result = token
 
                 self.session.commit()
-            return result
+            return True
 
         except Exception as e:
             self.session.rollback()
-            logger.exception(f"Error saving coin info for mint {token.mint}: {e}")
+            if token is not None:
+                logger.exception(
+                    f"Error saving coin info for mint {token.token_address}: {e}"
+                )
             raise

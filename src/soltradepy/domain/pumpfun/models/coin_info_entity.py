@@ -6,7 +6,7 @@ class CoinInfo(SQLModel, table=True):
     Tabla para almacenar información básica de monedas.
     """
 
-    __tablename__ = "coin_info"
+    __tablename__ = "coin_info"  # type: ignore
 
     mint: str = Field(primary_key=True)  # dirección del token
     name: str | None = None

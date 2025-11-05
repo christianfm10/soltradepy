@@ -1,5 +1,3 @@
-from typing import Optional
-
 import httpx
 
 from soltradepy.infrastructure.data_providers.base_client import BaseClient
@@ -24,7 +22,7 @@ class PumpfunClient(BaseClient):
 
     def __init__(
         self,
-        proxy: Optional[str] = None,
+        proxy: str | None = None,
         verify_ssl: bool = True,
         timeout: int = 30,
     ):
