@@ -16,10 +16,12 @@ dependencies = [
     "requests>=2.32.5",
     "ruff>=0.14.3",
     "sqlmodel>=0.0.27",
+    "typer>=0.20.0",
 ]
 
 [project.scripts]
-soltradepy = "soltradepy:main"
+# soltradepy = "soltradepy:main"
+main = "soltradepy.main:app"
 moralis-tokens = "soltradepy.application.moralis_job:cli"
 createdb = "soltradepy.application.create_db:cli"
 graduated_tokens_coin_info = "soltradepy.application.coin_info_job:cli"
