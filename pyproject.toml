@@ -3,7 +3,7 @@ name = "soltradepy"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [{ name = "zilar", email = "" }]
+authors = [{ name = "zilar", email = "zilar@example.com" }]
 requires-python = ">=3.14"
 dependencies = [
     "beautifulsoup4>=4.14.2",
