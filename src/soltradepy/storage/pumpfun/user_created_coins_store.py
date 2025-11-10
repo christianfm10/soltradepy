@@ -9,22 +9,26 @@ logger = logging.getLogger(__name__)
 
 
 class UserWalletRepository(BaseRepository[UserWallet]):
-    def save(self, wallet: UserWallet) -> UserWallet | None:
+    def save(self, fields: dict) -> UserWallet | None:
         """
         Store para persistir información de user wallet coins created.
         Args:
             wallet: Wallet's Public Key
         """
         try:
-            stmt = select(UserWallet).where(UserWallet.public_key == wallet.public_key)
+            stmt = select(UserWallet).where(
+                UserWallet.public_key == fields["public_key"]
+            )
             existing = self.session.scalar(stmt)
 
             if existing:
-                logger.info(f"Updating user wallet for address {wallet.public_key}")
-                for key, value in wallet.model_dump().items():
+                wallet = existing
+                logger.info(f"Updating user wallet for address {fields['public_key']}")
+                for key, value in fields.items():
                     if key != "id":
                         setattr(existing, key, value)
             else:
+                wallet = UserWallet.model_validate(fields)
                 logger.info(
                     f"Inserting new user wallet for address {wallet.public_key}"
                 )
@@ -36,6 +40,6 @@ class UserWalletRepository(BaseRepository[UserWallet]):
         except Exception as e:
             self.session.rollback()
             logger.exception(
-                f"Error saving user wallet for address {wallet.public_key}: {e}"
+                f"Error saving user wallet for address {fields['public_key']}: {e}"
             )
             raise

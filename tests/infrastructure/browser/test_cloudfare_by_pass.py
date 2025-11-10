@@ -21,7 +21,7 @@ async def get_cf_cookie(proxy: str):
 @pytest.mark.asyncio
 @pytest.mark.skip
 async def test_cf_bypass():
-    proxy = "176.126.103.194:44214"
+    proxy = "95.216.214.204:8888"
     cf_bypass = CloudflareBypass(
         target_url="https://solscan.io/account/", proxy=proxy, headless=False
     )

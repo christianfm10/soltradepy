@@ -1,5 +1,3 @@
-import httpx
-
 from soltradepy.infrastructure.data_providers.base_client import BaseClient
 from soltradepy.infrastructure.data_providers.pumpfun.models.get_coin_info_response import (
     CoinInfoResponse,

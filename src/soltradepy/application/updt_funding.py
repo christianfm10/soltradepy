@@ -4,7 +4,6 @@ import logging
 # from sqlalchemy import select
 from sqlmodel import text
 
-from soltradepy.domain.core.models.wallet_entity import UserWallet
 from soltradepy.infrastructure.config.env import get_settings
 from soltradepy.infrastructure.data_providers.solscan.models.funded_by import (
     FundedByResponse,
@@ -18,11 +17,6 @@ from soltradepy.infrastructure.http.store import ProxyStore
 from soltradepy.infrastructure.http.worker import create_queue, create_tasks
 from soltradepy.storage.pumpfun.user_created_coins_store import UserWalletRepository
 
-# logging with colors, orange for warnings, red for errors, green for info, blue for debug
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 settings = get_settings()
 
@@ -31,7 +25,7 @@ async def main():
     """Update UserWalletModel's funding info with funding info from Solscan."""
     session = get_session()
     logging.info("Select UserWalletModels without funding info...")
-    stmt = "SELECT public_key as address FROM user_wallets WHERE funded_wallet IS NULL"
+    stmt = "SELECT public_key as address FROM user_wallets WHERE funded_wallet IS NULL LIMIT 50"
     wallets = session.execute(text(stmt)).mappings().all()
 
     proxies = ProxyStore().load()
@@ -58,8 +52,17 @@ async def main():
         _, _, response = result
         funded_by = response.data
         if funded_by:
-            user = UserWallet.from_funded_by(funded_by.model_dump())
-            repo.save(user)
+            key_map = {
+                "address": "public_key",
+                "funded_by": "funded_wallet",
+                "tx_hash": "funded_txn",
+                "funded_date": "funded_date",
+            }
+            mapped_data = {
+                key_map[k]: v for k, v in funded_by.model_dump().items() if k in key_map
+            }
+            # user = UserWallet.from_funded_by(funded_by.model_dump())
+            repo.save(fields=mapped_data)
 
 
 def cli():

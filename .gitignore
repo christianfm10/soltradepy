@@ -21,5 +21,11 @@ wheels/
 # Data
 **/data/proxies/*.json
 
+# Sessions
+sessions/
+
+# Queries
+queries/
+
 # DB
 *.db

@@ -16,7 +16,9 @@ class PumpfunService:
     """Service for interacting with the Pumpfun data provider."""
 
     def __init__(self, session: Session, client: PumpfunClient | None = None):
-        self.client = client or PumpfunClient()
+        proxy = "144.31.26.218:3128"
+        # proxy = "4.149.153.123:312"
+        self.client = client or PumpfunClient(proxy=proxy)
         self.coin_info_service = CoinInfoService(self.client, session)
         self.coin_info_repo = CoinInfoRepository(session)
         self.user_wallet_repo = UserWalletRepository(session)
@@ -37,7 +39,7 @@ class PumpfunService:
             "public_key": wallet_address,
             "created_tokens_count": response.count,
         }
-        wallet = UserWallet.model_validate(response)
-        wallet = self.user_wallet_repo.save(wallet)
+        # wallet = UserWallet.model_validate(response)
+        wallet = self.user_wallet_repo.save(fields=response)
 
         return wallet

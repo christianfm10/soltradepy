@@ -9,9 +9,13 @@ class BaseClient(ABC):
 
     def __init__(self, **kwargs):
         self.proxy: str | None = kwargs.get("proxy", None)
+        self.clearance: str | None = kwargs.pop("cf_clearance", None)
+        self.cookies = {}
+        if self.clearance is not None:
+            self.cookies["cf_clearance"] = self.clearance
         if self.proxy is not None:
             kwargs["proxy"] = httpx.Proxy(f"http://{self.proxy}")
-        self.client = httpx.AsyncClient(**kwargs)
+        self.client = httpx.AsyncClient(cookies=self.cookies, **kwargs)
         self.headers = {"Accept": "application/json"}
         self.client.headers.update(self.headers)
 

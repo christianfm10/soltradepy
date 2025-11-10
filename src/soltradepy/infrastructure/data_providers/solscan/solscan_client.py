@@ -27,6 +27,7 @@ class SolscanClient(BaseClient):
             - `verify` (bool): Verify SSL.
             - `timeout` (int): Timeout request.
             - `proxy` (str): Proxy address.
+            - `cf_clearance` (str): Cloudflare clearance token.
 
         **Returns:**
         - `SolscanClient`: Solscan Client

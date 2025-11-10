@@ -5,10 +5,6 @@ from sqlalchemy import text
 from soltradepy.infrastructure.database import get_session
 from soltradepy.services.pumpfun.pumpfun_service import PumpfunService
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
 logging.getLogger("httpx").setLevel(logging.DEBUG)
 
 

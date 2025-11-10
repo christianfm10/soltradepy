@@ -10,6 +10,7 @@ class Proxy(APIBaseModel):
     fail_count: int = 0
     # Indicate where the proxy is stored
     store_at: str | None = None
+    cf_clearance: str | None = None
 
     def __repr__(self) -> str:
         return self.host

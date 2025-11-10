@@ -4,12 +4,6 @@ from soltradepy.infrastructure.config.env import get_settings
 from soltradepy.infrastructure.database import get_session
 from soltradepy.services.moralis.moralis_service import MoralisService
 
-# logging with colors, orange for warnings, red for errors, green for info, blue for debug
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
-
 settings = get_settings()
 
 
@@ -22,6 +16,7 @@ async def main():
     logging.info("Starting graduated tokens sync job...")
     result = await moralis_service.sync_graduated_tokens(limit=100)
     logging.info(f"Graduated tokens sync completed: {result}")
+    logging.info(f"{result['saved']} tokens graduated was saved")
 
     # await moralis_service.sync_graduated_tokens()
 

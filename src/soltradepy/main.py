@@ -1,6 +1,8 @@
+import logging
 import os
 
 import typer
+from rich.logging import RichHandler
 
 from soltradepy.application.coin_info_job import cli as coin_info_cli
 from soltradepy.application.coins_count_job import cli as coins_count_cli
@@ -8,6 +10,17 @@ from soltradepy.application.create_db import cli as create_db_cli
 from soltradepy.application.generate_proxies import cli as generate_proxies_cli
 from soltradepy.application.moralis_job import cli as moralis_job_cli
 from soltradepy.application.updt_funding import cli as updt_funding_cli
+
+handler = RichHandler(rich_tracebacks=True, markup=True)
+logging.basicConfig(
+    level="INFO",
+    format="%(message)s",
+    datefmt="[%X]",
+    handlers=[handler],
+)
+
+
+log = logging.getLogger("rich")
 
 app = typer.Typer(help="Soltradepy Application Menu")
 

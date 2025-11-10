@@ -1,14 +1,12 @@
 # storage/graduated_tokens_store.py
 import json
 import logging
-
 from pathlib import Path
 
 from sqlmodel import select
 
 from soltradepy.domain.moralis.models.graduated_token_entity import GraduatedToken
 from soltradepy.infrastructure.repository.base_repository import BaseRepository
-
 
 DATA_PATH = Path(__file__).parent / "tokens_graduated.json"
 
@@ -56,13 +54,15 @@ class GraduatedTokenRepository(BaseRepository[GraduatedToken]):
                 existing = self.session.scalar(stmt)
 
                 if existing:
-                    logger.info(f"Updating coin info for mint {token.token_address}")
+                    logger.info(
+                        f"[bold green]Updating coin info for mint {token.token_address}[/bold green]"
+                    )
                     for key, value in token.model_dump().items():
                         if key != "id":
                             setattr(existing, key, value)
                 else:
                     logger.info(
-                        f"Inserting new coin info for mint {token.token_address}"
+                        f"[bright_green]Inserting new coin info for mint {token.token_address}[/bright_green]"
                     )
                     self.session.add(token)
 

@@ -38,11 +38,19 @@ def fake_user_created_coins(mock_user_created_coins_response):
 
 
 @pytest.mark.asyncio
-async def test_save(fake_user_created_coins: UserWallet, session):
+async def test_save(session):
     """Test the save_sql method of UserCreatedCoinInfo"""
 
     repository = UserWalletRepository(session=session)
+    mock_user_created_coins_response = {
+        "public_key": "4TR4otqwNY4QomVCJp3gD3HrwSb2H6hUaGiYwHKrpyz5",
+        "created_tokens_count": 1,
+    }
 
-    user = repository.save(fake_user_created_coins)
+    user = repository.save(fields=mock_user_created_coins_response)
     assert user is not None
-    assert user.public_key == fake_user_created_coins.public_key
+    assert user.public_key == mock_user_created_coins_response["public_key"]
+    assert (
+        user.created_tokens_count
+        == mock_user_created_coins_response["created_tokens_count"]
+    )

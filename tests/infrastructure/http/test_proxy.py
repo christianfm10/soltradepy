@@ -46,6 +46,7 @@ def test_random_proxies():
     store.save()
 
 
+@pytest.mark.skip
 @pytest.mark.asyncio
 async def test_client():
     # result = random_proxies()

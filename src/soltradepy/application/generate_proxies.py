@@ -4,11 +4,6 @@ from soltradepy.infrastructure.config.env import get_settings
 from soltradepy.infrastructure.http.proxy import Host, random_proxies, validate_proxies
 from soltradepy.infrastructure.http.store import ProxyStore
 
-# logging with colors, orange for warnings, red for errors, green for info, blue for debug
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
 logging.getLogger("httpx").setLevel(logging.WARNING)
 settings = get_settings()
 

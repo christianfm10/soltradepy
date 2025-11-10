@@ -3,5 +3,8 @@ from soltradepy.infrastructure.http.models import Proxy
 
 
 def create_clients(proxies: list[Proxy], client_type: type[BaseClient]):
-    clients = [client_type(proxy=p.host) for p in proxies]
+    clients = [
+        client_type(proxy=p.host, cf_clearance=p.cf_clearance, timeout=20)
+        for p in proxies
+    ]
     return clients
