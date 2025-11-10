@@ -3,16 +3,61 @@ from concurrent.futures import (
     ThreadPoolExecutor,
     wait,
 )
+from enum import Enum
 
 import httpx
 from bs4 import BeautifulSoup
 
+from soltradepy.infrastructure.http.models import Proxy
+
 NUM_THREADS = 20
 
 
+class Host(Enum):
+    GOOGLE = "GOOGLE"
+    SOLSCAN = "SOLSCAN"
+    IPIFY = "IPIFY"
+
+
+CONFIGS = {
+    Host.GOOGLE: {
+        "url": "https://www.google.com",
+        "headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0",
+        },
+        "params": {},
+    },
+    Host.IPIFY: {
+        "url": "https://api.ipify.org/?format=json",
+        "headers": {
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0",
+        },
+        "params": {},
+    },
+    Host.SOLSCAN: {
+        "url": "https://api-v2.solscan.io/v2/account/funded_by",
+        "headers": {
+            "Accept": "application/json, text/plain, */*",
+            "Accept-Encoding": "gzip, deflate",
+            "Origin": "https://solscan.io",
+            "Referer": "https://solscan.io",
+            "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0",
+        },
+        "params": {"address": "3PFkJVowwwxqhk3Z4PonV5ibsimFvXRQWiU3mAzwoaKv"},
+    },
+}
+
+
+class NoValidProxiesException(Exception):
+    """Exception raised when no valid proxies are found."""
+
+    pass
+
+
 def random_proxies(
-    country: str | None = None, google_verified: bool = False
-) -> list[str] | None:
+    country: str | None = None, google_verified: bool = False, host=Host.GOOGLE
+) -> list[Proxy]:
     """Returns a 'random' proxy (ip:port) from the currently configured list.
 
     This is accomplished by testing each proxy concurrently until we find one that works.
@@ -22,38 +67,32 @@ def random_proxies(
 
     proxy_list = get_proxies(country, google_verified)
 
-    thread_list = []
-    pool = ThreadPoolExecutor(NUM_THREADS)
-
-    for proxy in proxy_list:
-        proxy_thread = pool.submit(
-            validate_proxy,
-            proxy=proxy,
-            timeout=validate_proxy_timeout,
-        )
-        thread_list.append(proxy_thread)
-
-    wait(thread_list, return_when=ALL_COMPLETED)
-    valid_proxy_list = [proxy.result() for proxy in thread_list if proxy.result()]
+    valid_proxy_list = validate_proxies(
+        proxy_list=proxy_list, timeout=validate_proxy_timeout, host=host
+    )
+    # valid_proxy_list = [proxy.result() for proxy in thread_list if proxy.result()]
 
     if valid_proxy_list:
+        # proxy_list = [Proxy(host=p, alive=True) for p in valid_proxy_list]
         return valid_proxy_list
     else:
-        raise Exception(
+        raise NoValidProxiesException(
             "No working proxies were found at this time, please try again later."
         )
 
 
 def list_proxies(
     country: str | None = None, google_verified: bool = False
-) -> list[str]:
+) -> list[Proxy]:
     """Lists all proxies from the currently configured list."""
     proxy_list = get_proxies(country, google_verified)
 
     return proxy_list
 
 
-def get_proxies(country: str | None = None, google_verified: bool = False) -> list[str]:
+def get_proxies(
+    country: str | None = None, google_verified: bool = False
+) -> list[Proxy]:
     """Gets a list of proxies from https://www.sslproxies.org by scraping the proxy table."""
     proxy_list = []
 
@@ -79,7 +118,8 @@ def get_proxies(country: str | None = None, google_verified: bool = False) -> li
         country_code = entry_elements[2]  # Two digit ISO country code
         is_google_verified = True if entry_elements[5] == "yes" else False
 
-        proxy = f"{ip_address}:{port}"
+        # proxy = f"{ip_address}:{port}"
+        proxy = Proxy(host=f"{ip_address}:{port}")
 
         # If the user specified filters, respect them here
         if (
@@ -104,32 +144,53 @@ def get_proxies(country: str | None = None, google_verified: bool = False) -> li
     return proxy_list
 
 
-def validate_proxy(proxy: str, timeout: float) -> str | None:
+def validate_proxies(
+    proxy_list: list[Proxy], timeout: float, host: Host = Host.GOOGLE
+) -> list[Proxy]:
+    thread_list = []
+    pool = ThreadPoolExecutor(NUM_THREADS)
+
+    for proxy in proxy_list:
+        proxy_thread = pool.submit(
+            validate_proxy,
+            proxy=proxy,
+            timeout=timeout,
+            host=host,
+        )
+        thread_list.append(proxy_thread)
+
+    wait(thread_list, return_when=ALL_COMPLETED)
+    valid_proxy_list = [proxy.result() for proxy in thread_list if proxy.result()]
+    alive_proxies = [p for p in valid_proxy_list if p.alive]
+
+    return alive_proxies
+    return valid_proxy_list
+
+
+def validate_proxy(
+    proxy: Proxy, timeout: float, host: Host = Host.GOOGLE
+) -> Proxy | None:
     """
     Valida si un proxy está funcionando correctamente usando httpx.
     Devuelve el proxy si es válido, o None si falla.
     """
-    url = "https://www.google.com"
-    url = "https://api-v2.solscan.io/v2/account/funded_by?address=3PFkJVowwwxqhk3Z4PonV5ibsimFvXRQWiU3mAzwoaKv"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0",
-    }
-    headers = {
-        "Accept": "application/json, text/plain, */*",
-        "Accept-Encoding": "gzip, deflate",
-        "Origin": "https://solscan.io",
-        "Referer": "https://solscan.io",
-        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0",
-    }
-    proxy_obj = httpx.Proxy(f"http://{proxy}")
+    url = CONFIGS[host].get("url", "https://google.com")
+    headers = CONFIGS[host].get("headers", {})
+    params = CONFIGS[host].get("params", {})
+    proxy_obj = httpx.Proxy(f"http://{proxy.host}")
 
     try:
-        response = httpx.get(url, headers=headers, proxy=proxy_obj, timeout=timeout)
-        # Si el código de estado es 200, el proxy respondió correctamente
-        if response.status_code == 200 or response.status_code == 403:
-            return proxy
+        with httpx.stream(
+            "GET", url, headers=headers, proxy=proxy_obj, params=params, timeout=timeout
+        ) as response:
+            # Si el código de estado es 200, el proxy respondió correctamente
+            if response.status_code == 200:
+                proxy.alive = True
+                return proxy
     except Exception:
         # Si ocurre cualquier error, el proxy no es válido
-        return None
+        proxy.alive = False
+        return proxy
 
-    return None
+    proxy.alive = False
+    return proxy

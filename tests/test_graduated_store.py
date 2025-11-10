@@ -34,5 +34,6 @@ def test_save_tokens_inserts_data(session):
     result = session.exec(
         text("SELECT token_address, name FROM graduated_tokens")
     ).all()
+
     assert len(result) == 1
     assert result[0][0] == "0x123"

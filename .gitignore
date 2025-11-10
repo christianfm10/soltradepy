@@ -18,5 +18,8 @@ wheels/
 # Storage
 **/storage/*.json
 
+# Data
+**/data/proxies/*.json
+
 # DB
 *.db

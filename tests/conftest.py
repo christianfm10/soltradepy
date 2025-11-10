@@ -67,7 +67,7 @@ def moralis_client(settings):
         MoralisClient,
     )
 
-    return MoralisClient(settings.moralis_api_key)
+    return MoralisClient(api_key=settings.moralis_api_key)
 
 
 @pytest.fixture

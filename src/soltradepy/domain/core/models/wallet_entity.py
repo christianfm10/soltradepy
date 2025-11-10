@@ -11,7 +11,10 @@ class BaseWallet(SQLModel):
 
 class UserWallet(BaseWallet, table=True):
     __tablename__ = "user_wallets"  # type: ignore
-    id: int | None = Field(default=None, primary_key=True)
+    id: int | None = Field(
+        default=None,
+        primary_key=True,
+    )
 
     funded_wallet: str | None = None
     funded_txn: str | None = None
@@ -37,6 +40,18 @@ class UserWallet(BaseWallet, table=True):
         key_map = {
             "public_key": "public_key",
             "count": "created_tokens_count",
+        }
+        mapped_data = {key_map[k]: v for k, v in data.items() if k in key_map}
+
+        return cls(**mapped_data)
+
+    @classmethod
+    def from_funded_by(cls, data: dict):
+        key_map = {
+            "address": "public_key",
+            "funded_by": "funded_wallet",
+            "tx_hash": "funded_txn",
+            "funded_date": "funded_date",
         }
         mapped_data = {key_map[k]: v for k, v in data.items() if k in key_map}
 

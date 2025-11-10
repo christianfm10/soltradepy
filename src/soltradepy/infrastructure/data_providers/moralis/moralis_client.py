@@ -7,13 +7,13 @@ from soltradepy.infrastructure.data_providers.moralis.models.graduated_tokens_re
 class MoralisClient(BaseClient):
     BASE_URL = "https://solana-gateway.moralis.io"
 
-    def __init__(self, api_key: str):
+    def __init__(self, *, api_key: str, **kwargs):
         """
         Initialize client with multiple API keys
         Args:
             api_keys: List of Moralis API keys to rotate through
         """
-        super().__init__()
+        super().__init__(**kwargs)
         self.api_key = api_key
         self.client.headers = {"X-API-Key": self.api_key}
 

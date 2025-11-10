@@ -25,15 +25,14 @@ def init_db() -> None:
     SQLModel.metadata.create_all(engine)
 
 
-# @contextmanager
-def get_session():
+def get_session() -> Session:
     """
     Devuelve una sesión nueva.
     El usuario (tú) es responsable de cerrarla al finalizar.
     """
     # engine = create_engine_from_settings()
-
+    # session = Session(engine)
     # with Session(engine) as session:
-    #     yield session
+    # yield session
     # session = Session(engine)
     return Session(engine)

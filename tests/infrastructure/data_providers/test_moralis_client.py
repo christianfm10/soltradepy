@@ -1,6 +1,7 @@
 # Test MoralisClient data provider
-import pytest
 from unittest.mock import AsyncMock
+
+import pytest
 
 
 @pytest.fixture

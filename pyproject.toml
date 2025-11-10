@@ -3,9 +3,7 @@ name = "soltradepy"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-authors = [
-    { name = "zilar", email = "" }
-]
+authors = [{ name = "zilar", email = "" }]
 requires-python = ">=3.14"
 dependencies = [
     "beautifulsoup4>=4.14.2",
@@ -26,6 +24,8 @@ moralis-tokens = "soltradepy.application.moralis_job:cli"
 createdb = "soltradepy.application.create_db:cli"
 graduated_tokens_coin_info = "soltradepy.application.coin_info_job:cli"
 update_coins_counter = "soltradepy.application.coins_count_job:cli"
+gen_proxies = "soltradepy.application.generate_proxies:cli"
+updt_funding = "soltradepy.application.updt_funding:cli"
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]
@@ -43,4 +43,4 @@ skip-magic-trailing-comma = false
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
-ignore = ["E501"]  # Ignora líneas largas (opcional)
+ignore = ["E501"]              # Ignora líneas largas (opcional)

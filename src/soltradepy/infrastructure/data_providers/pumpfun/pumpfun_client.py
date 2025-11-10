@@ -10,6 +10,8 @@ from soltradepy.infrastructure.data_providers.pumpfun.models.user_created_coins_
 
 
 class PumpfunClient(BaseClient):
+    """Pumpfun Client Class"""
+
     BASE_URL = "https://frontend-api-v3.pump.fun"
     BASE_V1 = "https://swap-api.pump.fun/v1"
     BASE_ADVANCED = "https://advanced-api-v2.pump.fun"
@@ -22,12 +24,23 @@ class PumpfunClient(BaseClient):
 
     def __init__(
         self,
-        proxy: str | None = None,
-        verify_ssl: bool = True,
-        timeout: int = 30,
+        **kwargs,
     ):
-        super().__init__()
-        self.client = httpx.AsyncClient(verify=verify_ssl, timeout=timeout)
+        """
+        Initialize a Pumpfun Client instance
+
+        **Parameters:**
+        - `**kwargs` (dict, optional): Opciones adicionales.
+            - `verify` (bool): Verify SSL.
+            - `timeout` (int): Timeout request.
+            - `proxy` (str): Proxy address.
+
+        **Returns:**
+        - `PumpfunClient`: Pumpfun Client
+        """
+        super().__init__(**kwargs)
+        # self.client = httpx.AsyncClient(verify=verify, timeout=timeout)
+        # self.client.timeout = timeout
         self.client.headers.update(self.DEFAULT_HEADERS)
 
     async def get_coin_info(self, token_address: str) -> CoinInfoResponse:
@@ -48,7 +61,8 @@ class PumpfunClient(BaseClient):
         self, user_id: str, **kwargs
     ) -> UserCreatedCoinsResponse:
         """
-        Obtiene las memecoins creadas por un usuario específico en Pump.fun."""
+        Obtiene las memecoins creadas por un usuario específico en Pump.fun.
+        """
 
         endpoint = f"/coins/user-created-coins/{user_id}"
         params = {"offset": 0, "limit": 10, "includeNsfw": "false"}
