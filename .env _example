@@ -1,0 +1,5 @@
+MORALIS_API_KEY="..."
+HELIUS_API_KEY="..."
+
+# Database
+DATABASE_URL="sqlite:///soltradepy.db"
