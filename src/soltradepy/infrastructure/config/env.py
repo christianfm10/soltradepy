@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     """Configuration settings loaded from environment variables or .env file."""
 
     moralis_api_key: str
+    helius_api_key: str
     database_url: str
     debug_sql: bool = False
 
@@ -16,7 +17,7 @@ class Settings(BaseSettings):
     )
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> Settings:
     """Retrieve the application settings."""
-    return Settings()
+    return Settings()  # type: ignore

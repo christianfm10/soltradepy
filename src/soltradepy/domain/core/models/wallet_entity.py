@@ -22,7 +22,7 @@ class UserWallet(BaseWallet, table=True):
     funded_amount: int | None = None
 
     created_tokens_count: int | None = None
-    has_usdc: bool = False
+    has_usdc: bool | None = None
     is_isma: bool = False
 
     tags_json: str | None = Field(

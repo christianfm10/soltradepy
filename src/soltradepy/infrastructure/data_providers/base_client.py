@@ -1,4 +1,3 @@
-import asyncio
 from abc import ABC
 
 import httpx
@@ -10,7 +9,10 @@ class BaseClient(ABC):
     def __init__(self, **kwargs):
         self.proxy: str | None = kwargs.get("proxy", None)
         self.clearance: str | None = kwargs.pop("cf_clearance", None)
+        self.base_url: str | None = kwargs.pop("base_url", None)
         self.cookies = {}
+        if self.base_url is not None:
+            self.BASE_URL = self.base_url
         if self.clearance is not None:
             self.cookies["cf_clearance"] = self.clearance
         if self.proxy is not None:
@@ -19,10 +21,16 @@ class BaseClient(ABC):
         self.headers = {"Accept": "application/json"}
         self.client.headers.update(self.headers)
 
-    async def _fetch(self, method: str, endpoint: str, params: dict | None = None):
+    async def _fetch(
+        self,
+        method: str,
+        endpoint: str = "",
+        params: dict | None = None,
+        payload: dict | None = None,
+    ):
         url = f"{self.BASE_URL}{endpoint}"
 
-        response = await self.client.request(method, url, params=params)
+        response = await self.client.request(method, url, params=params, json=payload)
         response.raise_for_status()
 
         return response.json()
