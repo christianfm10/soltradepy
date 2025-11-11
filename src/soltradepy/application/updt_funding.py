@@ -4,6 +4,7 @@ import logging
 # from sqlalchemy import select
 from sqlmodel import text
 
+from soltradepy.infrastructure.async_utils.worker import monitor_workers
 from soltradepy.infrastructure.config.env import get_settings
 from soltradepy.infrastructure.data_providers.solscan.models.funded_by import (
     FundedByResponse,
@@ -38,7 +39,7 @@ async def main():
     logging.info("Fetching funding info from Solscan...")
     tasks = create_tasks(proxies, clients, queue, results, max_retries)
 
-    # tasks = await monitor_workers(tasks, queue)
+    tasks = await monitor_workers(tasks, queue)
 
     await queue.join()
     for t in tasks:

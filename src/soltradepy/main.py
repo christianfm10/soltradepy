@@ -9,7 +9,9 @@ from soltradepy.application.coins_count_job import cli as coins_count_cli
 from soltradepy.application.create_db import cli as create_db_cli
 from soltradepy.application.generate_proxies import cli as generate_proxies_cli
 from soltradepy.application.moralis_job import cli as moralis_job_cli
+from soltradepy.application.updt_cf import cli as updt_cf
 from soltradepy.application.updt_funding import cli as updt_funding_cli
+from soltradepy.application.updt_uri import cli as updt_uri
 
 handler = RichHandler(rich_tracebacks=True, markup=True)
 logging.basicConfig(
@@ -31,6 +33,8 @@ COMMANDS = [
     ("Generate Proxies", generate_proxies_cli),
     ("Moralis Job", moralis_job_cli),
     ("Update Funding", updt_funding_cli),
+    ("Update cf_clearance", updt_cf),
+    ("Update metadata uri", updt_uri),
     ("Change Moralis API Key", None),  # Nueva opción
 ]
 

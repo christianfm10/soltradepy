@@ -28,3 +28,5 @@ class CoinInfo(SQLModel, table=True):
     ath_market_cap: float | None = None
     ath_market_cap_timestamp: int | None = None
     usd_market_cap: float | None = None
+    uri_size: int | None = None
+    uri_json: str | None = None
