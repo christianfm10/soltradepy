@@ -15,6 +15,20 @@ async def test_get_token_accounts():
     assert response.token_accounts is not None
 
 
+# TODO: Mock get_transaction() response
+@pytest.mark.skip
+@pytest.mark.asyncio
+async def test_get_transaction():
+    rpc_client = RPC_Client(base_url=HELIUS_RPC)
+    response = await rpc_client.get_transaction(
+        signature="3fmy2CEfQjZnGQQtxF3kXLXQJqAi5W2PieCUK9RrzMUZL63g4XNQ399eS6iBxqWevS3hY5g7QXQ33wg8MXeBx8An",
+        to_pk="76S6oEPykGMPjnQzXCL3c6Lt86t6cqPby36R4Z99utD",
+    )
+    # print(response.send_sol_amount)
+    # print(response.sol_amount)
+    assert response.sol_amount is not None
+
+
 USDC = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
 
 

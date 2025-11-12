@@ -1,7 +1,7 @@
 from soltradepy.infrastructure.data_providers.base_client import BaseClient
 from soltradepy.infrastructure.data_providers.rpc.models.models import (
-    RPCGetTokenAccountsResponse,
     RPCGetTokenAccountsResult,
+    RPCGetTransactionResult,
 )
 
 
@@ -29,7 +29,7 @@ class RPC_Client(BaseClient):
         Obtiene las cuentas de tokens asociadas a una wallet
 
         Args:
-            owner_address: Dirección de la wallet (base58)
+            owner: Dirección de la wallet (base58)
             show_zero_balance: Si se deben incluir cuentas con saldo cero
 
         Returns:
@@ -52,9 +52,53 @@ class RPC_Client(BaseClient):
         payload = {"jsonrpc": "2.0", "id": 1, "method": method, "params": params}
 
         result = await self._fetch("POST", payload=payload)
-        result = RPCGetTokenAccountsResponse(**result)
 
-        if result.error is not None:
-            raise RPCException(f"Error RPC: {result.error['message']}")
+        if result["error"] is not None:
+            raise RPCException(f"Error RPC: {result['error']['message']}")
+        result = RPCGetTokenAccountsResult(**result["result"])
 
-        return result.result
+        return result
+
+    async def get_transaction(
+        self,
+        signature: str,
+        encoding: str = "json",
+        commitment="finalized",
+        from_pk=None,
+        to_pk=None,
+    ) -> RPCGetTransactionResult:
+        """
+        Obtiene los detalles de una transacción por su firma (signature)
+
+        Args:
+            signature: Firma de la transacción
+            encoding: Formato de codificación (por defecto "json")
+
+        Returns:
+            Diccionario con los detalles de la transacción
+
+        Raises:
+            Exception: Para errores RPC o firma inválida
+        """
+        if not isinstance(signature, str) or len(signature) < 20:
+            raise ValueError("Firma inválida")
+
+        method = "getTransaction"
+        params = [
+            signature,
+            {
+                "commitment": commitment,
+                "encoding": encoding,
+                "maxSupportedTransactionVersion": 0,
+            },
+        ]
+        payload = {"jsonrpc": "2.0", "id": 1, "method": method, "params": params}
+
+        result = await self._fetch("POST", payload=payload)
+
+        if "error" in result:
+            raise Exception(f"Error RPC: {result['error']['message']}")
+
+        txn = RPCGetTransactionResult(**result["result"], from_pk=from_pk, to_pk=to_pk)
+
+        return txn

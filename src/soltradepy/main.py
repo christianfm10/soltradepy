@@ -11,6 +11,7 @@ from soltradepy.application.generate_proxies import cli as generate_proxies_cli
 from soltradepy.application.moralis_job import cli as moralis_job_cli
 from soltradepy.application.updt_cf import cli as updt_cf
 from soltradepy.application.updt_funding import cli as updt_funding_cli
+from soltradepy.application.updt_funding_amount import cli as updt_funding_amount_cli
 from soltradepy.application.updt_uri import cli as updt_uri
 from soltradepy.application.updt_usdc import cli as updt_usdt_cli
 
@@ -37,6 +38,7 @@ COMMANDS = [
     ("Update cf_clearance", updt_cf),
     ("Update metadata uri", updt_uri),
     ("Update USDC", updt_usdt_cli),
+    ("Update Funding Amount", updt_funding_amount_cli),
     ("Change Moralis API Key", None),  # Nueva opción
 ]
 

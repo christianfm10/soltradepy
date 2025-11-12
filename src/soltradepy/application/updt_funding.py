@@ -26,7 +26,15 @@ async def main():
     """Update UserWalletModel's funding info with funding info from Solscan."""
     session = get_session()
     logging.info("Select UserWalletModels without funding info...")
-    stmt = "SELECT public_key as address FROM user_wallets WHERE funded_wallet IS NULL LIMIT 50"
+    # stmt = "SELECT public_key as address FROM user_wallets WHERE funded_wallet IS NULL"
+    stmt = """
+    SELECT public_key as address
+    FROM user_wallets 
+        LEFT JOIN coin_info as ci ON public_key = ci.creator
+    WHERE funded_wallet IS NULL 
+    ORDER BY created_timestamp DESC
+    LIMIT 20;
+    """
     wallets = session.execute(text(stmt)).mappings().all()
 
     proxies = ProxyStore().load()

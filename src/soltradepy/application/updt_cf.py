@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 async def update_cf():
     """Crea la base de datos y las tablas necesarias."""
-    proxy = "167.71.177.246:2525"
+    proxy = "45.191.47.2:999"
     # 91.201.72.226:8090 44.215.73.168:8118
     cf_bypass = CloudflareBypass(
         target_url="https://solscan.io/account/", proxy=proxy, headless=False
