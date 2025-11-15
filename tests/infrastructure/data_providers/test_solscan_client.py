@@ -77,7 +77,7 @@ def mock_funded_by_response():
 @pytest.fixture
 def solscan_client() -> SolscanClient:
     proxy = "41.89.56.116:3128"  # TODO: Generate random proxy
-    return SolscanClient(proxy=proxy)
+    return SolscanClient()
 
 
 @pytest.mark.asyncio
@@ -90,5 +90,26 @@ async def test_get_funded_by(solscan_client: SolscanClient, mock_funded_by_respo
     response = await solscan_client.get_funded_by(
         address="DALASbVfzSWnvQ2jmXanU5C3cWPBvM25xmmnBZar72pj"
     )
+
+    assert response.success
+
+
+USDC = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+
+
+# TODO: Mock get_transfers response
+@pytest.mark.skip
+@pytest.mark.asyncio
+async def test_get_transfers(solscan_client: SolscanClient, mock_funded_by_response):
+    """
+    Test get_transfers request
+    """
+    # solscan_client._fetch = AsyncMock(return_value=mock_funded_by_response)
+    response = await solscan_client.get_transfers(
+        address="G6fC9JUeEJxhmX1AGxd9uWBNcZmym9vPrNn72rByydaH",
+        token=USDC,
+        to="21wG4F3ZR8gwGC47CkpD6ySBUgH9AABtYMBWFiYdTTgv",
+    )
+    print(len(response.data))
 
     assert response.success

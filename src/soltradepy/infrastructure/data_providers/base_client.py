@@ -42,7 +42,6 @@ class BaseClient(ABC):
         response = await self.client.get("https://api.ipify.org/?format=json")
         response.raise_for_status()
 
-        print(response.json())
         return response.json()
 
     async def fake_request(self, address: str):
@@ -54,3 +53,6 @@ class BaseClient(ABC):
             # await asyncio.sleep(5)
             raise RuntimeError(f"proxy {self.proxy} fallo")
         return f"resultado de {address} via {self.proxy}"
+
+    async def close(self):
+        await self.client.aclose()

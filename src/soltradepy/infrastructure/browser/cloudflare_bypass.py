@@ -19,7 +19,7 @@ class CloudflareBypass:
         proxy: str | None = None,
         headless: bool = False,
         session_dir: str = "sessions",
-        timeout: int = 60,
+        timeout: int = 100,
     ):
         self.target_url = target_url
         self.proxy = proxy

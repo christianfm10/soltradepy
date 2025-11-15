@@ -24,6 +24,7 @@ class UserWallet(BaseWallet, table=True):
     created_tokens_count: int | None = None
     has_usdc: bool | None = None
     is_isma: bool = False
+    has_21w_txns: bool | None = None
 
     tags_json: str | None = Field(
         default="[]"

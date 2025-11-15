@@ -28,6 +28,7 @@ graduated_tokens_coin_info = "soltradepy.application.coin_info_job:cli"
 update_coins_counter = "soltradepy.application.coins_count_job:cli"
 gen_proxies = "soltradepy.application.generate_proxies:cli"
 updt_funding = "soltradepy.application.updt_funding:cli"
+updt_21w = "soltradepy.application.updt_21w:cli"
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]

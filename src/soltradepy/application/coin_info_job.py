@@ -20,6 +20,7 @@ async def main():
     FROM graduated_tokens gt
     LEFT JOIN coin_info ci ON gt.token_address = ci.mint
     WHERE ci.mint IS NULL
+    ORDER BY gt.graduated_at DESC;
     """
     tokens = session.scalars(text(stmt)).all()
     for token_address in tokens:

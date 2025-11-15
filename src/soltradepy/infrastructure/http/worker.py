@@ -11,13 +11,11 @@ def create_queue(addresses):
     return queue
 
 
-def create_tasks(proxies: list[Proxy], clients, queue, results, max_retries):
+def create_tasks(proxies: list[Proxy], clients_funcs, queue, results, max_retries):
     tasks = [
         asyncio.create_task(
-            worker(
-                p.host, client.get_funded_by, queue, results, max_retries=max_retries
-            )
+            worker(p.host, client_func, queue, results, max_retries=max_retries)
         )
-        for p, client in zip(proxies, clients)
+        for p, client_func in zip(proxies, clients_funcs)
     ]
     return tasks
