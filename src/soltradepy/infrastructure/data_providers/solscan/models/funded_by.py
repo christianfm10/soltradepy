@@ -1,4 +1,5 @@
 import datetime
+
 from pydantic import model_serializer, model_validator
 
 from soltradepy.infrastructure.data_providers.base_model import APIBaseModel

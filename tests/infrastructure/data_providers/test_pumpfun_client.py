@@ -96,3 +96,47 @@ async def test_get_user_created_coins(mock_user_created_coins_response, pumpfun_
     )
 
     assert client_response.count == 10
+
+
+@pytest.mark.asyncio
+async def test_get_user_token_trades(pumpfun_client):
+    """Test fetching developer trades from Pump.fun client."""
+    mock_dev_trades_response = {
+        "3ppaecEgx9ii6XyjMhux2tUeTLm8FtXnV6UbK4JSTJwP": [
+            {
+                "slotIndexId": "0003803700650013040000",
+                "tx": "2uXRWUftxJoBYDC4phpfvU5cMMkSwE2hpCkvogU5FbbZFdkwAxrULjb4W9D7CqJ6nwbty3WXrqtpJ2Tab89uXvXP",
+                "timestamp": "2025-11-16T02:51:10.000Z",
+                "userAddress": "3ppaecEgx9ii6XyjMhux2tUeTLm8FtXnV6UbK4JSTJwP",
+                "type": "sell",
+                "isBondingCurve": True,
+                "priceUSD": "0.00002357626546853604368800600075132970576951",
+                "priceSOL": "0.0000001680235894399910673383833350120631522198",
+                "amountUSD": "1816.25554658824642713891159",
+                "amountSOL": "12.944110113",
+                "baseAmount": "65507727913762",
+                "quoteAmount": "12944110113",
+            },
+            {
+                "slotIndexId": "0003803700160007830002",
+                "tx": "3WuHfjNgRZAe4cuLqiU6DHTzaRDFrYfnPsteVFJw3jVEDkne4ddLTsMqUCqpQ8RTr7B9bnhMf9sB7jm7K2CJAREQ",
+                "timestamp": "2025-11-16T02:50:51.000Z",
+                "userAddress": "3ppaecEgx9ii6XyjMhux2tUeTLm8FtXnV6UbK4JSTJwP",
+                "type": "buy",
+                "isBondingCurve": True,
+                "priceUSD": "0.000004455885890499943249435268277725510269984",
+                "priceSOL": "0.00000003171301474684178325316410793850102471019",
+                "amountUSD": "274.07447995762482766953526",
+                "amountSOL": "1.950617282",
+                "baseAmount": "65507727913762",
+                "quoteAmount": "1950617282",
+            },
+        ],
+    }
+    pumpfun_client._fetch = AsyncMock(return_value=mock_dev_trades_response)
+    trades = await pumpfun_client.get_user_token_trades(
+        token_address="GThEFKn6HdpEbwAtbAPkhh4zbvJjRo4tG6mb7J4pump",
+        user_address="3ppaecEgx9ii6XyjMhux2tUeTLm8FtXnV6UbK4JSTJwP",
+    )
+
+    assert len(trades) == 2

@@ -2,6 +2,10 @@ from soltradepy.infrastructure.data_providers.base_client import BaseClient
 from soltradepy.infrastructure.data_providers.pumpfun.models.get_coin_info_response import (
     CoinInfoResponse,
 )
+from soltradepy.infrastructure.data_providers.pumpfun.models.get_user_trades import (
+    Trades,
+    UserTradesResponse,
+)
 from soltradepy.infrastructure.data_providers.pumpfun.models.user_created_coins_response import (
     UserCreatedCoinsResponse,
 )
@@ -72,3 +76,20 @@ class PumpfunClient(BaseClient):
         # data = [UserCreatedCoin(**x) for x in data["coins"]]
 
         return data
+
+    async def get_user_token_trades(
+        self, token_address: str, user_address: str
+    ) -> list[Trades]:
+        """
+        Obtiene las operaciones (trades) realizadas por un desarrollador específico en una memecoin de Pump.fun.
+        """
+
+        endpoint = f"/coins/{token_address}/trades/batch"
+        payload = {"userAddresses": [f"{user_address}"]}
+        self.BASE_URL = self.BASE_V1
+
+        trades = UserTradesResponse(
+            **await self._fetch("POST", endpoint, payload=payload)
+        )
+
+        return trades.user_trades
