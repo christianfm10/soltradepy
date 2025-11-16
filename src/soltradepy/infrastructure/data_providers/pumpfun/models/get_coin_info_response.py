@@ -1,4 +1,4 @@
-from pydantic import model_serializer
+from pydantic import field_validator, model_serializer
 
 from soltradepy.infrastructure.data_providers.base_model import APIBaseModel
 
@@ -47,6 +47,7 @@ class CoinInfoResponse(APIBaseModel):
     hide_banner: bool
     livestream_downrank_score: int | None = None
     usd_market_cap: float
+    mayhem_state: int | None = None  # 1= active, 2 = completed
 
     @model_serializer
     def serializar(self):
@@ -65,3 +66,15 @@ class CoinInfoResponse(APIBaseModel):
             "ath_market_cap": self.ath_market_cap,
             "ath_market_cap_timestamp": self.ath_market_cap_timestamp,
         }
+
+    @field_validator("mayhem_state", mode="before")
+    def convert_mayhem_state(cls, v):
+        """Converts mayhem_state from string to int representation."""
+        if v == "active":
+            return 1
+        elif v == "completed":
+            return 2
+        elif v is None:
+            return None
+        else:
+            raise ValueError("Invalid mayhem_state value")

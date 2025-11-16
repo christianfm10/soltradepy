@@ -53,7 +53,7 @@ class RPC_Client(BaseClient):
 
         result = await self._fetch("POST", payload=payload)
 
-        if result["error"] is not None:
+        if hasattr(result, "error"):
             raise RPCException(f"Error RPC: {result['error']['message']}")
         result = RPCGetTokenAccountsResult(**result["result"])
 

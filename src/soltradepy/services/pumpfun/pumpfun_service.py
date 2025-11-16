@@ -29,6 +29,17 @@ class PumpfunService:
 
         return coin
 
+    async def update_mayhem_state(self, token_address: str):
+        """Update mayhem_state"""
+        response = await self.client.get_coin_info(token_address=token_address)
+        mayhem_state = response.mayhem_state
+        data = {
+            "mint": token_address,
+            "mayhem_state": mayhem_state,
+        }
+        coin = self.coin_info_repo.update(data)
+        return coin
+
     async def sync_uri_data(self, data):
         """Update coin_info with uri_size and uri_json."""
         coin = self.coin_info_repo.update(data)

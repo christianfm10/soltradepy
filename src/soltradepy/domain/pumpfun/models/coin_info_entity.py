@@ -30,3 +30,4 @@ class CoinInfo(SQLModel, table=True):
     usd_market_cap: float | None = None
     uri_size: int | None = None
     uri_json: str | None = None
+    mayhem_state: int | None = None  # 1= active, 2 = completed
